@@ -19,3 +19,8 @@ garn.groupBy('age').groupBy('hair-color');
 garn.process(stream, function(error, results) {
     console.log(results);
 });
+
+License
+-------
+
+MIT
