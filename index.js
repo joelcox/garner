@@ -50,7 +50,7 @@ Garner.prototype._setOperation = function(column, operationType) {
  */
 Garner.prototype.process = function(stream, fn) {
   var that = this;
-  stream.on('data', this._processRow.bind(this))
+  stream.on('record', this._processRow.bind(this))
   stream.on('end', function() {
     fn(null, that.results);
   });

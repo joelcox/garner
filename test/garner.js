@@ -26,7 +26,7 @@ describe('Garner', function() {
     csvStream.writable = true;
 
     csvStream.write = function (data) {
-      this.emit('data', data);
+      this.emit('record', data);
       return true;
     }
 
