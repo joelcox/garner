@@ -1,0 +1,20 @@
+{
+  "name": "garner",
+  "version": "0.0.0",
+  "description": "Streaming array aggregation for Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": "",
+  "keywords": [
+    "array",
+    "stream",
+    "data",
+    "aggregation"
+  ],
+  "author": "Joël Cox <joel@joelcox.nl>",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "85bd7cb17f8c9a4f034a788df0fbbe136cc70955"
+}

@@ -15,6 +15,6 @@ csv().from.path(path, {delimiter: ';'}).to.stream(stream);
 
 var garn = garner.createGarner();
 garn.groupBy('age').groupByRelative('hair-color').maximum('weight');
-garn.process(stream, function(err, result) {
+garn.process(stream, function(error, result) {
     console.log(result);
 });
