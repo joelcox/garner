@@ -1,4 +1,4 @@
-var string = require('string');
+var S = require('string');
 var _ = require('underscore');
 
 /**
@@ -8,6 +8,8 @@ var _ = require('underscore');
  * @this Garner
  */
 function Garner() {
+  this.operations = [];
+  this.results = {};
 }
 
 /**
@@ -28,7 +30,7 @@ Garner.prototype.groupBy = function(column) {
  * @api private
  */
 Garner.prototype._setOperation = function(column, operationType) {
-  column = string(column).camelize();
+  column = S(column).camelize();
   if (typeof this.operations[column] === 'undefined') {
     this.operations[column] = [];
   }
@@ -38,24 +40,24 @@ Garner.prototype._setOperation = function(column, operationType) {
 
 Garner.prototype.process = function(stream, fn) {
   var that = this;
-
   stream.on('data', this._processRow.bind(this))
   stream.on('end', function() {
-    fn(null, that.result);
+    fn(null, that.columnNames);
   });
 };
 
 Garner.prototype._processRow = function(data) {
+  var that = this;
 
-  // Keep the column names around
   if (typeof this.columnNames === 'undefined') {
-
-    // Transform all column names to camelCase
-    this.columnNames = _.map(data, function(name) {
-      return string(name).camelize();
+    this.columnNames = [];
+    data.forEach(function(item) {
+      that.columnNames.push(S(item).camelize().s);
     });
-    
+
+    return true;
   }
+
 }
 
 module.exports.createGarner = function() {
