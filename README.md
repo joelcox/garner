@@ -9,12 +9,13 @@ Example
 ````
 var garner = require('garner'); 
 var csv = require('csv');
+var stream = require('stream');
 
-var stream = new Readable()
+var stream = new stream.Stream();
 csv().from.path(path, {delimiter: ';'}).to.stream(stream);
 
 var garn = garner.createGarner();
-garn.groupBy('age').groupByRelative('hair-color').maximum('weight');
-garn.process(stream, function(error, result) {
-    console.log(result);
+garn.groupBy('age').groupBy('hair-color');
+garn.process(stream, function(error, results) {
+    console.log(results);
 });

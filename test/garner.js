@@ -16,14 +16,13 @@ describe('Garner', function() {
 
   it('has a `_setOperation` function', function() {
     garn._setOperation('hair-color', 'GROUP_BY');
-    garn.operations.should.have.keys('hairColor');
-    garn.operations.hairColor.should.have.length(1);
+    garn.results.should.have.keys(['_rows', 'hairColor']);
   });
 
   it('has a `process` function', function(done) {
 
     // Mock out a stream
-    var csvStream = new stream.Stream()
+    var csvStream = new stream.Stream();
     csvStream.writable = true;
 
     csvStream.write = function (data) {
@@ -36,8 +35,10 @@ describe('Garner', function() {
     }
 
     garn.groupBy('hair-color');
-    garn.process(csvStream, function(err, result) {
-      result.should.eql(['eyeColor', 'hairColor', 'weight'])
+    garn.process(csvStream, function(err, results) {
+      results.hairColor.operations['GROUP_BY'].blonde.should.eql(1);
+      results.hairColor.operations['GROUP_BY'].black.should.eql(2);
+      results._rows.should.eql(3);
       done();
     });
 
