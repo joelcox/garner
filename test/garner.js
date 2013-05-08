@@ -10,9 +10,28 @@ describe('Garner', function() {
     garn = garner.createGarner();
   });
 
-  it('has a `groupBy` function', function() {
-    garn.should.have.property('groupBy');
+  describe('has a `groupBy` function that', function() {
+
+    it('sets a `groupBy` operation for a column', function() {
+      garn.groupBy('hair-color');
+      garn.results.hairColor.operations.groupBy.should.be.ok;
+    });
+
   });
+
+  it('has a `_eachGroupBy` function that counts occurances of a value', function() {
+    var group = garn._eachgroupBy({}, 'blonde');
+    group.should.have.keys('blonde');
+    group.blonde.should.eql(1);
+    group = garn._eachgroupBy(group, 'blonde');
+    group.should.have.keys('blonde');
+    group.blonde.should.eql(2);
+    group = garn._eachgroupBy(group, 'black');
+    group.should.have.keys(['blonde', 'black']);
+    group.blonde.should.eql(2);
+    group.black.should.eql(1);
+  });
+
 
   it('has a `_setOperation` function', function() {
     garn._setOperation('hair-color', 'groupBy');
