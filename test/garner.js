@@ -15,7 +15,7 @@ describe('Garner', function() {
   });
 
   it('has a `_setOperation` function', function() {
-    garn._setOperation('hair-color', 'GROUP_BY');
+    garn._setOperation('hair-color', 'groupBy');
     garn.results.should.have.keys(['_rows', 'hairColor']);
   });
 
@@ -36,8 +36,8 @@ describe('Garner', function() {
 
     garn.groupBy('hair-color');
     garn.process(csvStream, function(err, results) {
-      results.hairColor.operations['GROUP_BY'].blonde.should.eql(1);
-      results.hairColor.operations['GROUP_BY'].black.should.eql(2);
+      results.hairColor.operations.groupBy.blonde.should.eql(1);
+      results.hairColor.operations.groupBy.black.should.eql(2);
       results._rows.should.eql(3);
       done();
     });
