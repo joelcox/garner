@@ -14,7 +14,7 @@ describe('Garner', function() {
 
     it('sets a `groupBy` operation for a column', function() {
       garn.groupBy('hair-color');
-      garn.results.hairColor.operations.groupBy.should.be.ok;
+      garn.results.hairColor.operations.groupBy.should.be.eql({});
     });
 
   });
@@ -54,9 +54,12 @@ describe('Garner', function() {
     }
 
     garn.groupBy('hair-color');
+    garn.groupByRelative('hair-color');
     garn.process(csvStream, function(err, results) {
       results.hairColor.operations.groupBy.blonde.should.eql(1);
       results.hairColor.operations.groupBy.black.should.eql(2);
+      results.hairColor.operations.groupByRelative.blonde.should.eql(0.3333333333333333);
+      results.hairColor.operations.groupByRelative.black.should.eql(0.6666666666666666);
       results._rows.should.eql(3);
       done();
     });

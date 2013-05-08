@@ -24,6 +24,17 @@ Garner.prototype.groupBy = function(column) {
 };
 
 /**
+ * Groups and counts all values in a column, devided by the total rows
+ * @param {String} column name that is grouped
+ * @api public
+ * @return {Garner}
+ */
+Garner.prototype.groupByRelative = function(column) {
+  this._setOperation(column, 'groupByRelative');
+  return this;
+};
+
+/**
  * Sets an operation on a column
  * @param {String} column name that the operation is performed on
  * @param {String} operation that should be performed on the column
@@ -52,6 +63,7 @@ Garner.prototype.process = function(stream, fn) {
   var that = this;
   stream.on('record', this._processRow.bind(this))
   stream.on('end', function() {
+    that._processOperation('after')
     fn(null, that.results);
   });
 };
@@ -92,7 +104,6 @@ Garner.prototype._processRow = function(data) {
  * @api private
  */
 Garner.prototype._processOperation = function(hook, row) {
-  var that = this;
 
   // Loop over each operation in each column, and append the value
   for (var column in this.results) {
@@ -101,22 +112,35 @@ Garner.prototype._processOperation = function(hook, row) {
     if (column.substring(0, 1) === '_') continue;
 
     // Pull the value from the current row from the correct index
-    var value = row[that.results[column]._index];
+    var value;
+    if (hook === 'each') value = row[this.results[column]._index];
 
-    for (var operation in that.results[column].operations) {
+    for (var operation in this.results[column].operations) {
 
-      var result = that.results[column].operations[operation];
+      // Get the current result for the operation until now and compose name
+      var result = this.results[column].operations[operation];
       var fnName = '_' + hook + S(operation).camelize().s;
 
       // Call the specific hooks function for this operation with the current
       // result which is modified in the hook function.
-      that.results[column].operations[operation] = this[fnName](result, value);
+      if (typeof this[fnName] !== 'undefined') {
+        this.results[column].operations[operation] = this[fnName](result, value);
+      }
+
     }
 
   }
 
 }
 
+/**
+ * Takes an object, adds the value to the object if it's not already in
+ * the object, else it increases the counter
+ * @param {Object} current result set
+ * @param {Mixed} value that has be be counted
+ * @return {Object} new result set
+ * @api private
+ */
 Garner.prototype._eachgroupBy = function(result, value) {
   // Create or increment the counter of a value for this operation
   if (typeof result[value] === 'undefined') {
@@ -126,7 +150,29 @@ Garner.prototype._eachgroupBy = function(result, value) {
   }
 
   return result;
+}
 
+/**
+ * Proxy for `eachGroupBy`.
+ */
+Garner.prototype._eachgroupByRelative = function(result, value) {
+  return this._eachgroupBy(result, value);
+}
+
+/**
+ * Devides the results by the total number of rows after everything has been
+ * counted
+ * @param {Object} current result set
+ * @param {undefined}
+ * @return {Object} new result set
+ * @api private
+ */
+Garner.prototype._aftergroupByRelative = function(result, value) {
+  for (var index in result) {
+    result[index] = result[index] / this.results._rows;
+  }
+
+  return result;
 }
 
 module.exports.createGarner = function() {
