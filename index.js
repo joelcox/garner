@@ -24,7 +24,18 @@ Garner.prototype.groupBy = function(column) {
 };
 
 /**
- * Groups and counts all values in a column, devided by the total rows
+ * Pick the value from the first row
+ * @param {String} column name that is picked
+ * @api public
+ * @return {Garner}
+ */
+Garner.prototype.first = function(column) {
+  this._setOperation(column, 'first');
+  return this;
+};
+
+/**
+ * Groups and counts all values in a column
  * @param {String} column name that is grouped
  * @api public
  * @return {Garner}
@@ -173,6 +184,19 @@ Garner.prototype._aftergroupByRelative = function(result, value) {
   }
 
   return result;
+}
+
+
+/**
+ * Pick the value from the first row
+ * @param {Object} current result set
+ * @param {undefined}
+ * @return {Object} new result set
+ * @api private
+ */
+Garner.prototype._eachfirst = function(result, value) {
+  if (typeof result === 'object') return value;
+  else return result;
 }
 
 module.exports.createGarner = function() {

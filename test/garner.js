@@ -55,19 +55,22 @@ describe('Garner', function() {
 
     garn.groupBy('hair-color');
     garn.groupByRelative('hair-color');
+    garn.first('weight');
+
     garn.process(csvStream, function(err, results) {
       results.hairColor.operations.groupBy.blonde.should.eql(1);
       results.hairColor.operations.groupBy.black.should.eql(2);
       results.hairColor.operations.groupByRelative.blonde.should.eql(0.3333333333333333);
       results.hairColor.operations.groupByRelative.black.should.eql(0.6666666666666666);
+      results.weight.operations.first.should.eql(71);
       results._rows.should.eql(3);
       done();
     });
 
     csvStream.write(['eye-color', 'hair-color', 'weight']);
-    csvStream.write(['blue', 'blonde', '71']);
-    csvStream.write(['blue', 'black', '82']);
-    csvStream.write(['brown', 'black', '87']);
+    csvStream.write(['blue', 'blonde', 71]);
+    csvStream.write(['blue', 'black', 82]);
+    csvStream.write(['brown', 'black', 87]);
     csvStream.end();
 
   });
